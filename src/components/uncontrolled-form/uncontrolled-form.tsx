@@ -16,7 +16,7 @@ export default function UncontrolledForm() {
       ...values,
       age: Number(values.age),
       terms: formData.get('terms') === 'on',
-      picture: formData.getAll('picture'),
+      picture: formData.get('picture'),
     };
 
     const result = signupSchema.safeParse(parsedValues);
@@ -36,13 +36,22 @@ export default function UncontrolledForm() {
           picture: reader.result,
         });
       };
-      reader.readAsDataURL(result.data.picture);
+      if (parsedValues.picture instanceof File) {
+        reader.readAsDataURL(parsedValues.picture);
+      }
       e.currentTarget.reset();
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-3">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto p-6 bg-gray-900 rounded-xl shadow-md space-y-4"
+    >
+      <h2 className="text-2xl font-bold text-center text-gray-300 mb-4">
+        Sign Up
+      </h2>
+
       <FormField label="Name" name="name" error={errors.name} />
       <FormField label="Age" name="age" type="number" error={errors.age} />
       <FormField label="Email" name="email" type="email" error={errors.email} />
@@ -62,15 +71,15 @@ export default function UncontrolledForm() {
         label="Gender"
         name="gender"
         as="select"
-        options={['Male', 'Female', 'Bread', 'Other', 'Prefer not to say']}
+        options={['Male', 'Female', '🍞', 'Other', 'Prefer not to say']}
         error={errors.gender}
       />
       <FormField
         label="Country"
         name="country"
         as="input"
-        error={errors.country}
         list="countries"
+        error={errors.country}
       />
       <datalist id="countries">
         {COUNTRIES.map((c) => (
@@ -84,12 +93,24 @@ export default function UncontrolledForm() {
         options={['image/png', 'image/jpeg']}
         error={errors.picture}
       />
+
       <div className="flex items-center space-x-2">
-        <input type="checkbox" name="terms" id="terms" />
-        <label htmlFor="terms">Accept T&C</label>
+        <input
+          type="checkbox"
+          name="terms"
+          id="terms"
+          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        />
+        <label htmlFor="terms" className="text-gray-300">
+          Accept T&C
+        </label>
       </div>
       <ErrorMessage message={errors.terms} />
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+
+      <button
+        type="submit"
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition"
+      >
         Submit
       </button>
     </form>

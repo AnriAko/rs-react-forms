@@ -18,6 +18,7 @@ export default function ControlledForm() {
     resolver: zodResolver(signupSchema),
     mode: 'onChange',
   });
+
   const onSubmit = (data: SignupFormData) => {
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -28,13 +29,21 @@ export default function ControlledForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-3">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="max-w-md mx-auto p-6 bg-gray-900 rounded-xl shadow-md space-y-4"
+    >
+      <h2 className="text-2xl font-bold text-center text-gray-300 mb-4">
+        Sign Up
+      </h2>
+
       <FormField<SignupFormData>
         label="Name"
         name="name"
         register={register('name')}
         error={errors.name?.message}
       />
+
       <FormField<SignupFormData>
         label="Age"
         name="age"
@@ -42,6 +51,7 @@ export default function ControlledForm() {
         register={register('age')}
         error={errors.age?.message}
       />
+
       <FormField<SignupFormData>
         label="Email"
         name="email"
@@ -49,6 +59,7 @@ export default function ControlledForm() {
         register={register('email')}
         error={errors.email?.message}
       />
+
       <FormField<SignupFormData>
         label="Password"
         name="password"
@@ -56,6 +67,7 @@ export default function ControlledForm() {
         register={register('password')}
         error={errors.password?.message}
       />
+
       <FormField<SignupFormData>
         label="Confirm Password"
         name="confirmPassword"
@@ -68,7 +80,7 @@ export default function ControlledForm() {
         label="Gender"
         name="gender"
         as="select"
-        options={['Male', 'Female', 'Bread', 'Other', 'Prefer not to say']}
+        options={['Male', 'Female', '🍞', 'Other', 'Prefer not to say']}
         register={register('gender')}
         error={errors.gender?.message}
       />
@@ -97,15 +109,22 @@ export default function ControlledForm() {
       />
 
       <div className="flex items-center space-x-2">
-        <input type="checkbox" {...register('terms')} id="terms" />
-        <label htmlFor="terms">Accept T&C</label>
+        <input
+          type="checkbox"
+          {...register('terms')}
+          id="terms"
+          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        />
+        <label htmlFor="terms" className="text-gray-700">
+          Accept T&C
+        </label>
       </div>
       <ErrorMessage message={errors.terms?.message} />
 
       <button
         type="submit"
         disabled={!isValid}
-        className="bg-blue-500 text-white px-4 py-2 disabled:bg-gray-400"
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition disabled:bg-gray-400"
       >
         Submit
       </button>
