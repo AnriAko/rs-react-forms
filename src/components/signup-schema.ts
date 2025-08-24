@@ -9,9 +9,13 @@ export const signupSchema = z
   .object({
     name: z
       .string()
-      .regex(/^[A-Z][a-zA-Z]*$/, 'Name must start with uppercase'),
+      .regex(
+        /^\p{Lu}[\p{L}\p{M}]*$/u,
+        'Name must start with an uppercase letter'
+      ),
+
     age: z.coerce.number().min(0, 'Age must be non-negative'),
-    email: z.string().email('Invalid email'),
+    email: z.email('Invalid email'),
     password: z
       .string()
       .min(6, 'Password too short')
@@ -19,7 +23,7 @@ export const signupSchema = z
       .regex(/[A-Z]/, 'Must include uppercase')
       .regex(/[a-z]/, 'Must include lowercase')
       .regex(/[^a-zA-Z0-9]/, 'Must include special character'),
-    confirmPassword: z.string().min(6),
+    confirmPassword: z.string(),
     gender: z.string().nonempty('Select gender'),
     country: z.enum(
       COUNTRIES as [string, ...string[]],

@@ -4,20 +4,43 @@ import { ErrorMessage } from '~/ui/error-message';
 import { FormField } from '~/ui/form-field';
 import { COUNTRIES } from '~/components/forms-config';
 
+type ParsedValues = {
+  name: string;
+  age: number | null;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  gender: string;
+  country: string;
+  terms: boolean;
+  picture: File[];
+};
+
 export default function UncontrolledForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const values = Object.fromEntries(formData.entries());
 
-    const parsedValues = {
-      ...values,
-      age: Number(values.age),
-      terms: formData.get('terms') === 'on',
-      picture: formData.get('picture'),
+    const formData = new FormData(e.currentTarget);
+    const rawValues = Object.fromEntries(formData.entries());
+
+    const parsedValues: ParsedValues = {
+      name: (rawValues.name as string) || '',
+      age: rawValues.age ? Number(rawValues.age) : null,
+      email: (rawValues.email as string) || '',
+      password: (rawValues.password as string) || '',
+      confirmPassword: (rawValues.confirmPassword as string) || '',
+      gender: (rawValues.gender as string) || '',
+      country: (rawValues.country as string) || '',
+      terms: rawValues.terms === 'on',
+      picture:
+        rawValues.picture instanceof File && rawValues.picture.size > 0
+          ? [rawValues.picture]
+          : [],
     };
+
+    console.log('Parsed values:', parsedValues);
 
     const result = signupSchema.safeParse(parsedValues);
 
@@ -29,15 +52,12 @@ export default function UncontrolledForm() {
       setErrors(newErrors);
     } else {
       setErrors({});
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        console.log('Uncontrolled form data:', {
-          ...result.data,
-          picture: reader.result,
-        });
-      };
-      if (parsedValues.picture instanceof File) {
-        reader.readAsDataURL(parsedValues.picture);
+      if (parsedValues.picture.length > 0) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          console.log('🖼️ Picture preview:', reader.result);
+        };
+        reader.readAsDataURL(parsedValues.picture[0]);
       }
       e.currentTarget.reset();
     }
@@ -52,24 +72,39 @@ export default function UncontrolledForm() {
         Sign Up
       </h2>
 
-      <FormField label="Name" name="name" error={errors.name} />
-      <FormField label="Age" name="age" type="number" error={errors.age} />
-      <FormField label="Email" name="email" type="email" error={errors.email} />
+      <FormField label="Name" name="name" id="field-name" error={errors.name} />
+      <FormField
+        label="Age"
+        name="age"
+        id="field-age"
+        type="number"
+        error={errors.age}
+      />
+      <FormField
+        label="Email"
+        name="email"
+        id="field-email"
+        type="email"
+        error={errors.email}
+      />
       <FormField
         label="Password"
         name="password"
+        id="field-password"
         type="password"
         error={errors.password}
       />
       <FormField
         label="Confirm Password"
         name="confirmPassword"
+        id="field-confirmPassword"
         type="password"
         error={errors.confirmPassword}
       />
       <FormField
         label="Gender"
         name="gender"
+        id="field-gender"
         as="select"
         options={['Male', 'Female', '🍞', 'Other', 'Prefer not to say']}
         error={errors.gender}
@@ -77,6 +112,7 @@ export default function UncontrolledForm() {
       <FormField
         label="Country"
         name="country"
+        id="field-country"
         as="input"
         list="countries"
         error={errors.country}
@@ -89,6 +125,7 @@ export default function UncontrolledForm() {
       <FormField
         label="Upload Picture"
         name="picture"
+        id="field-picture"
         as="file"
         options={['image/png', 'image/jpeg']}
         error={errors.picture}

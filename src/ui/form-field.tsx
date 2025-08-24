@@ -6,6 +6,7 @@ import cl from 'classnames';
 type FieldProps<T> = {
   label: string;
   name: keyof T;
+  id?: string;
   type?: string;
   as?: 'input' | 'select' | 'file';
   options?: string[];
@@ -17,6 +18,7 @@ type FieldProps<T> = {
 export const FormField = <T,>({
   label,
   name,
+  id,
   type = 'text',
   as = 'input',
   options = [],
@@ -32,19 +34,18 @@ export const FormField = <T,>({
   const borderStyles = error ? 'border-red-500' : 'border-gray-400';
 
   const inputClass = cl(baseStyles, focusStyles, borderStyles);
+  const fieldId = id || `field-${name as string}`;
 
   return (
     <div className="flex flex-col">
-      <label
-        htmlFor={name as string}
-        className="mb-1 font-medium text-gray-300"
-      >
+      <label htmlFor={fieldId} className="mb-1 font-medium text-gray-300">
         {label}
       </label>
 
       {as === 'input' && (
         <input
-          id={name as string}
+          id={fieldId}
+          name={name as string}
           type={type}
           className={inputClass}
           {...register}
@@ -53,7 +54,12 @@ export const FormField = <T,>({
       )}
 
       {as === 'select' && (
-        <select id={name as string} className={inputClass} {...register}>
+        <select
+          id={fieldId}
+          name={name as string}
+          className={inputClass}
+          {...register}
+        >
           <option value="">Select...</option>
           {options.map((opt) => (
             <option key={opt} value={opt}>
@@ -65,7 +71,8 @@ export const FormField = <T,>({
 
       {as === 'file' && (
         <input
-          id={name as string}
+          id={fieldId}
+          name={name as string}
           type="file"
           className={inputClass}
           accept={options.join(',')}
