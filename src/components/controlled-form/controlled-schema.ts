@@ -13,16 +13,15 @@ export const signupSchema = z
         /^\p{Lu}[\p{L}\p{M}]*$/u,
         'Name must start with an uppercase letter'
       ),
-
     age: z.coerce.number().min(0, 'Age must be non-negative'),
     email: z.email('Invalid email'),
     password: z
       .string()
       .min(6, 'Password too short')
-      .regex(/[0-9]/, 'Must include number')
-      .regex(/[A-Z]/, 'Must include uppercase')
-      .regex(/[a-z]/, 'Must include lowercase')
-      .regex(/[^a-zA-Z0-9]/, 'Must include special character'),
+      .regex(/\p{N}/u, 'Must include number')
+      .regex(/\p{Lu}/u, 'Must include uppercase letter')
+      .regex(/\p{Ll}/u, 'Must include lowercase letter')
+      .regex(/[^\p{L}\p{N}]/u, 'Must include special character'),
     confirmPassword: z.string(),
     gender: z.string().nonempty('Select gender'),
     country: z.enum(
@@ -32,21 +31,16 @@ export const signupSchema = z
     terms: z
       .boolean()
       .refine((val) => val === true, { message: 'Must accept T&C' }),
-    picture: z
-      .unknown()
-      .refine(
-        (files) => Array.isArray(files) && files.length === 1,
-        'File is required'
-      )
-      .transform((files) => (files as FileList)[0])
-      .refine(
-        (file) => (file as File).size <= MAX_FILE_SIZE,
-        'File size must be ≤ 5MB'
-      )
-      .refine(
-        (file) => ACCEPTED_IMAGE_TYPES.includes((file as File).type),
-        'Only .png or .jpeg allowed'
-      ),
+    picture: z.preprocess(
+      (val) => (val instanceof FileList && val.length === 1 ? val[0] : val),
+      z
+        .instanceof(File, { message: 'File is required' })
+        .refine((file) => file.size <= MAX_FILE_SIZE, 'File size must be ≤ 5MB')
+        .refine(
+          (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+          'Only .png or .jpeg allowed'
+        )
+    ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',

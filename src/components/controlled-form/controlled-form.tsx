@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signupSchema } from '~/components/signup-schema';
+import { signupSchema } from '~/components/controlled-form/controlled-schema';
 import { FormField } from '~/ui/form-field';
 import { ErrorMessage } from '~/ui/error-message';
 import { COUNTRIES } from '~/components/forms-config';

@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { signupSchema } from '~/components/signup-schema';
+import { signupSchema } from '~/components/uncontrolled-form/uncontrolled-schema';
 import { ErrorMessage } from '~/ui/error-message';
 import { FormField } from '~/ui/form-field';
 import { COUNTRIES } from '~/components/forms-config';
