@@ -1,23 +1,19 @@
 import { FormEvent, useState } from 'react';
+import { useAppDispatch } from '~/redux/hooks';
+import { addForm } from '~/redux/form-slice';
 import { signupSchema } from '~/components/uncontrolled-form/uncontrolled-schema';
 import { ErrorMessage } from '~/ui/error-message';
 import { FormField } from '~/ui/form-field';
 import { COUNTRIES } from '~/components/forms-config';
+import { z } from 'zod';
 
-type ParsedValues = {
-  name: string;
-  age: number | null;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  gender: string;
-  country: string;
-  terms: boolean;
-  picture: File[];
+export type FormData = z.infer<typeof signupSchema> & {
+  pictureBase64?: string;
 };
 
 export default function UncontrolledForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const dispatch = useAppDispatch();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,22 +21,27 @@ export default function UncontrolledForm() {
     const formData = new FormData(e.currentTarget);
     const rawValues = Object.fromEntries(formData.entries());
 
-    const parsedValues: ParsedValues = {
+    const fileInput = e.currentTarget.elements.namedItem(
+      'picture'
+    ) as HTMLInputElement;
+    const pictureFile = fileInput.files?.[0];
+
+    if (!pictureFile) {
+      setErrors({ picture: 'File is required' });
+      return;
+    }
+
+    const parsedValues: Omit<FormData, 'pictureBase64'> = {
       name: (rawValues.name as string) || '',
-      age: rawValues.age ? Number(rawValues.age) : null,
+      age: rawValues.age ? Number(rawValues.age) : 0,
       email: (rawValues.email as string) || '',
       password: (rawValues.password as string) || '',
       confirmPassword: (rawValues.confirmPassword as string) || '',
       gender: (rawValues.gender as string) || '',
-      country: (rawValues.country as string) || '',
+      country: (rawValues.country as string) || COUNTRIES[0],
       terms: rawValues.terms === 'on',
-      picture:
-        rawValues.picture instanceof File && rawValues.picture.size > 0
-          ? [rawValues.picture]
-          : [],
+      picture: pictureFile,
     };
-
-    console.log('Parsed values:', parsedValues);
 
     const result = signupSchema.safeParse(parsedValues);
 
@@ -50,17 +51,21 @@ export default function UncontrolledForm() {
         if (err.path[0]) newErrors[err.path[0].toString()] = err.message;
       });
       setErrors(newErrors);
-    } else {
-      setErrors({});
-      if (parsedValues.picture.length > 0) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          console.log('🖼️ Picture preview:', reader.result);
-        };
-        reader.readAsDataURL(parsedValues.picture[0]);
-      }
-      e.currentTarget.reset();
+      return;
     }
+
+    setErrors({});
+
+    const form: FormData = { ...parsedValues };
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      form.pictureBase64 = reader.result as string;
+      dispatch(addForm(form));
+    };
+    reader.readAsDataURL(pictureFile);
+
+    e.currentTarget.reset();
   };
 
   return (

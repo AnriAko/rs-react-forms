@@ -31,23 +31,23 @@ export const signupSchema = z
     terms: z
       .boolean()
       .refine((val) => val === true, { message: 'Must accept T&C' }),
-    picture: z
-      .unknown()
-      .refine(
-        (files) => Array.isArray(files) && files.length === 1,
-        'File is required'
-      )
-      .transform((files) => (files as FileList)[0])
-      .refine(
-        (file) => (file as File).size <= MAX_FILE_SIZE,
-        'File size must be ≤ 5MB'
-      )
-      .refine(
-        (file) => ACCEPTED_IMAGE_TYPES.includes((file as File).type),
-        'Only .png or .jpeg allowed'
-      ),
+    picture: z.preprocess(
+      (val) => (val instanceof FileList && val.length === 1 ? val[0] : val),
+      z
+        .instanceof(File, { message: 'File is required' })
+        .refine((file) => file.size <= MAX_FILE_SIZE, 'File size must be ≤ 5MB')
+        .refine(
+          (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+          'Only .png or .jpeg allowed'
+        )
+    ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',
     path: ['confirmPassword'],
+    when(payload) {
+      return signupSchema
+        .pick({ password: true, confirmPassword: true })
+        .safeParse(payload.value).success;
+    },
   });

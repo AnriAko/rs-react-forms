@@ -5,13 +5,25 @@ import { FormField } from '~/ui/form-field';
 import { ErrorMessage } from '~/ui/error-message';
 import { COUNTRIES } from '~/components/forms-config';
 import { z } from 'zod';
+import { useAppDispatch } from '~/redux/hooks';
+import { addForm } from '~/redux/form-slice';
+import { useEffect } from 'react';
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
-export default function ControlledForm() {
+type ControlledFormProps = {
+  onClose?: () => void;
+};
+
+export default function ControlledForm({ onClose }: ControlledFormProps) {
+  const dispatch = useAppDispatch();
+
   const {
     register,
     handleSubmit,
+    watch,
+    setError,
+    clearErrors,
     formState: { errors, isValid },
     reset,
   } = useForm({
@@ -19,13 +31,38 @@ export default function ControlledForm() {
     mode: 'onChange',
   });
 
+  const passwordValue = watch('password');
+  const confirmPasswordValue = watch('confirmPassword');
+
+  useEffect(() => {
+    if (passwordValue || confirmPasswordValue) {
+      if (passwordValue !== confirmPasswordValue) {
+        setError('confirmPassword', {
+          type: 'manual',
+          message: 'Passwords must match',
+        });
+      } else {
+        clearErrors('confirmPassword');
+      }
+    } else {
+      clearErrors('confirmPassword');
+    }
+  }, [passwordValue, confirmPasswordValue, setError, clearErrors]);
+
   const onSubmit = (data: SignupFormData) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      console.log('Controlled form data:', { ...data, picture: reader.result });
-    };
-    reader.readAsDataURL(data.picture);
-    reset();
+    if (data.picture) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        dispatch(addForm({ ...data, pictureBase64: reader.result as string }));
+        reset();
+        onClose?.();
+      };
+      reader.readAsDataURL(data.picture);
+    } else {
+      dispatch(addForm(data));
+      reset();
+      onClose?.();
+    }
   };
 
   return (
@@ -43,7 +80,6 @@ export default function ControlledForm() {
         register={register('name')}
         error={errors.name?.message}
       />
-
       <FormField<SignupFormData>
         label="Age"
         name="age"
@@ -51,7 +87,6 @@ export default function ControlledForm() {
         register={register('age')}
         error={errors.age?.message}
       />
-
       <FormField<SignupFormData>
         label="Email"
         name="email"
@@ -59,7 +94,6 @@ export default function ControlledForm() {
         register={register('email')}
         error={errors.email?.message}
       />
-
       <FormField<SignupFormData>
         label="Password"
         name="password"
@@ -67,7 +101,6 @@ export default function ControlledForm() {
         register={register('password')}
         error={errors.password?.message}
       />
-
       <FormField<SignupFormData>
         label="Confirm Password"
         name="confirmPassword"
@@ -75,7 +108,6 @@ export default function ControlledForm() {
         register={register('confirmPassword')}
         error={errors.confirmPassword?.message}
       />
-
       <FormField<SignupFormData>
         label="Gender"
         name="gender"
@@ -84,7 +116,6 @@ export default function ControlledForm() {
         register={register('gender')}
         error={errors.gender?.message}
       />
-
       <FormField<SignupFormData>
         label="Country"
         name="country"
@@ -98,7 +129,6 @@ export default function ControlledForm() {
           <option key={c} value={c} />
         ))}
       </datalist>
-
       <FormField<SignupFormData>
         label="Upload Picture"
         name="picture"
@@ -115,7 +145,7 @@ export default function ControlledForm() {
           id="terms"
           className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
         />
-        <label htmlFor="terms" className="text-gray-700">
+        <label htmlFor="terms" className="text-gray-300">
           Accept T&C
         </label>
       </div>

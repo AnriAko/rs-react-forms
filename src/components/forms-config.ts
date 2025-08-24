@@ -7,4 +7,5 @@ export const COUNTRIES = [
   'Spain',
   'USA',
   'Canada',
+  'Georgia',
 ];

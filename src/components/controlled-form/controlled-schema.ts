@@ -45,4 +45,9 @@ export const signupSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',
     path: ['confirmPassword'],
+    when(payload) {
+      return signupSchema
+        .pick({ password: true, confirmPassword: true })
+        .safeParse(payload.value).success;
+    },
   });

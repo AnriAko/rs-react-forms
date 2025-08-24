@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 type ModalProps = {
@@ -10,6 +10,14 @@ type ModalProps = {
 const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   const modalRoot = document.getElementById('modal-root');
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   if (!modalRoot || !isOpen) return null;
 
   return createPortal(
@@ -18,7 +26,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
       onClick={onClose}
     >
       <div
-        className="bg-gray-800 p-6 rounded-lg w-full max-w-md max-h-full overflow-y-auto relative"
+        className="bg-gray-800 min-w-2xl p-6 rounded-lg w-full max-w-md max-h-full overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
