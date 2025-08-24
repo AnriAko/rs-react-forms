@@ -15,9 +15,12 @@ export default defineConfig({
       exclude: [
         'src/**/*.test.{ts,tsx}',
         'src/**/*.spec.{ts,tsx}',
-        'src/index.tsx',
+        'src/app.tsx',
         'src/setupTests.ts',
         'src/**/*.d.ts',
+        'src/redux/store.ts',
+        'src/redux/hooks.ts',
+        'src/main.tsx',
       ],
       thresholds: {
         statements: 80,

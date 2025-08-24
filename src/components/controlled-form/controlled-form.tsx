@@ -79,6 +79,7 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         name="name"
         register={register('name')}
         error={errors.name?.message}
+        data-testid="field-name"
       />
       <FormField<SignupFormData>
         label="Age"
@@ -86,6 +87,7 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         type="number"
         register={register('age')}
         error={errors.age?.message}
+        data-testid="field-age"
       />
       <FormField<SignupFormData>
         label="Email"
@@ -93,6 +95,7 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         type="email"
         register={register('email')}
         error={errors.email?.message}
+        data-testid="field-email"
       />
       <FormField<SignupFormData>
         label="Password"
@@ -100,6 +103,7 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         type="password"
         register={register('password')}
         error={errors.password?.message}
+        data-testid="field-password"
       />
       <FormField<SignupFormData>
         label="Confirm Password"
@@ -107,6 +111,7 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         type="password"
         register={register('confirmPassword')}
         error={errors.confirmPassword?.message}
+        data-testid="field-confirmPassword"
       />
       <FormField<SignupFormData>
         label="Gender"
@@ -115,6 +120,7 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         options={['Male', 'Female', '🍞', 'Other', 'Prefer not to say']}
         register={register('gender')}
         error={errors.gender?.message}
+        data-testid="field-gender"
       />
       <FormField<SignupFormData>
         label="Country"
@@ -123,12 +129,8 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         list="countries"
         register={register('country')}
         error={errors.country?.message}
+        data-testid="field-country"
       />
-      <datalist id="countries">
-        {COUNTRIES.map((c) => (
-          <option key={c} value={c} />
-        ))}
-      </datalist>
       <FormField<SignupFormData>
         label="Upload Picture"
         name="picture"
@@ -136,14 +138,20 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
         options={['image/png', 'image/jpeg']}
         register={register('picture')}
         error={errors.picture?.message as string}
+        data-testid="field-picture"
       />
+      <datalist id="countries">
+        {COUNTRIES.map((c) => (
+          <option key={c} value={c} />
+        ))}
+      </datalist>
 
       <div className="flex items-center space-x-2">
         <input
           type="checkbox"
           {...register('terms')}
           id="terms"
-          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          data-testid="field-terms"
         />
         <label htmlFor="terms" className="text-gray-300">
           Accept T&C
@@ -153,6 +161,7 @@ export default function ControlledForm({ onClose }: ControlledFormProps) {
 
       <button
         type="submit"
+        data-testid="submit-button"
         disabled={!isValid}
         className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition disabled:bg-gray-400"
       >

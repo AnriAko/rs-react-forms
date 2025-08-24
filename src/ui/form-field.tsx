@@ -12,7 +12,8 @@ type FieldProps<T> = {
   register?: UseFormRegisterReturn;
   error?: string;
   list?: string;
-};
+} & React.InputHTMLAttributes<HTMLInputElement> &
+  React.SelectHTMLAttributes<HTMLSelectElement>;
 
 export const FormField = <T,>({
   label,
@@ -24,6 +25,7 @@ export const FormField = <T,>({
   register,
   error,
   list,
+  ...rest
 }: FieldProps<T>) => {
   const baseStyles =
     'border rounded-md p-2 w-full text-gray-300 bg-gray-800 focus:outline-none';
@@ -49,6 +51,7 @@ export const FormField = <T,>({
           className={inputClass}
           {...register}
           {...(list ? { list } : {})}
+          {...rest}
         />
       )}
 
@@ -58,6 +61,7 @@ export const FormField = <T,>({
           name={name as string}
           className={inputClass}
           {...register}
+          {...rest}
         >
           <option value="">Select...</option>
           {options.map((opt) => (
@@ -76,6 +80,7 @@ export const FormField = <T,>({
           className={inputClass}
           accept={options.join(',')}
           {...register}
+          {...rest}
         />
       )}
 
