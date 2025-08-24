@@ -69,7 +69,7 @@ export default function UncontrolledForm() {
       className="max-w-md mx-auto p-6 bg-gray-900 rounded-xl shadow-md space-y-4"
     >
       <h2 className="text-2xl font-bold text-center text-gray-300 mb-4">
-        Sign Up
+        Sign Up Uncontrolled
       </h2>
 
       <FormField label="Name" name="name" id="field-name" error={errors.name} />

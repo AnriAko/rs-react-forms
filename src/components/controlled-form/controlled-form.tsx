@@ -34,7 +34,7 @@ export default function ControlledForm() {
       className="max-w-md mx-auto p-6 bg-gray-900 rounded-xl shadow-md space-y-4"
     >
       <h2 className="text-2xl font-bold text-center text-gray-300 mb-4">
-        Sign Up
+        Sign Up Controlled
       </h2>
 
       <FormField<SignupFormData>
