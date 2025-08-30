@@ -2,21 +2,27 @@
 
 ### Same actions screenshot comparison(first is with memo and second without):
 
-1.  <img width="786" height="185" alt="image" src="https://github.com/user-attachments/assets/aeeb7ffd-0dca-43dd-91b7-caee35850511" />
+1.
 
-<img width="789" height="183" alt="image" src="https://github.com/user-attachments/assets/be01c7ed-68f6-4185-9296-2d47f870dd16" />
+---
+
+<img width="786" height="185" alt="image" src="https://github.com/user-attachments/assets/aeeb7ffd-0dca-43dd-91b7-caee35850511" />
+
+## <img width="789" height="183" alt="image" src="https://github.com/user-attachments/assets/be01c7ed-68f6-4185-9296-2d47f870dd16" />
 
 2.  <img width="789" height="251" alt="image" src="https://github.com/user-attachments/assets/714b39f5-d6d7-41d5-9a6e-76c2c41fee1a" />
 
-<img width="787" height="252" alt="image" src="https://github.com/user-attachments/assets/ef73bb72-ca39-4233-82ad-987a8cd7ab47" />
+## <img width="787" height="252" alt="image" src="https://github.com/user-attachments/assets/ef73bb72-ca39-4233-82ad-987a8cd7ab47" />
 
 3.  <img width="786" height="259" alt="image" src="https://github.com/user-attachments/assets/3cdf7e4a-712b-4b31-9abc-705f4d2020c7" />
 
-<img width="787" height="255" alt="image" src="https://github.com/user-attachments/assets/82709f3c-38b9-4630-8e27-104f9bf58eb4" />
+## <img width="787" height="255" alt="image" src="https://github.com/user-attachments/assets/82709f3c-38b9-4630-8e27-104f9bf58eb4" />
 
 4.  <img width="790" height="259" alt="image" src="https://github.com/user-attachments/assets/53a49ccd-a915-42fe-8b18-38ac969fba56" />
 
 <img width="787" height="257" alt="image" src="https://github.com/user-attachments/assets/2cc9f74b-47b0-4797-9e20-f3f3a1666fce" />
+
+---
 
 ### Overall comparison:
 
